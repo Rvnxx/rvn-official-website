@@ -3,32 +3,32 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --tilt-x: 0deg;
-            --tilt-y: 0deg;
-        }
+        :root { --tilt-x: 0deg; --tilt-y: 0deg; }
 
         body { 
-            margin: 0; 
-            background: #050505; 
-            color: white; 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden;
-            perspective: 1500px; 
+            margin: 0; background: #050505; color: white; 
+            font-family: 'Inter', sans-serif; height: 100vh; 
+            display: flex; align-items: center; justify-content: center; 
+            overflow: hidden; perspective: 1500px;
+            cursor: none; /* Hides the default cursor */
         }
 
-        /* Background Squares */
+        /* Custom Cursor Dot */
+        #cursor {
+            position: fixed; width: 8px; height: 8px; background: white;
+            border-radius: 50%; pointer-events: none; z-index: 999;
+            transition: transform 0.1s ease; transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px white;
+        }
+
+        /* Squares */
         .squares { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
         .squares li { 
             position: absolute; display: block; list-style: none; 
             background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); 
             animation: animate 25s linear infinite; bottom: -150px;
         }
-        .squares li:nth-child(1) { left: 20%; width: 70px; height: 70px; animation-delay: 0s; }
+        .squares li:nth-child(1) { left: 20%; width: 70px; height: 70px; }
         .squares li:nth-child(2) { left: 10%; width: 25px; height: 25px; animation-delay: 2s; }
         .squares li:nth-child(3) { left: 75%; width: 40px; height: 40px; animation-delay: 4s; }
 
@@ -37,82 +37,67 @@
             100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; } 
         }
 
-        /* BALANCED TILT CARD */
+        /* Glass Card */
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(25px); 
-            padding: 70px 90px; 
-            border-radius: 35px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            text-align: center; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); 
+            padding: 70px 90px; border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.05); 
+            text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.6);
             transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-            transform-style: preserve-3d;
-            min-width: 450px; 
+            transform-style: preserve-3d; min-width: 450px; 
         }
 
         h1 { 
-            font-size: 6rem; 
-            letter-spacing: 15px; 
-            margin: 0 0 20px 15px; 
-            font-weight: 900; 
-            transform: translateZ(60px); 
+            font-size: 6rem; letter-spacing: 15px; margin: 0 0 20px 15px; 
+            font-weight: 900; transform: translateZ(60px); 
             text-shadow: 0 15px 30px rgba(0,0,0,0.8);
         }
 
         .discord-info { 
             display: flex; align-items: center; justify-content: center; gap: 15px; 
-            font-size: 1.4rem; 
-            font-weight: 700; background: rgba(255, 255, 255, 0.05); 
-            padding: 18px 40px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer;
-            transform: translateZ(40px); 
+            font-size: 1.4rem; font-weight: 700; background: rgba(255, 255, 255, 0.03); 
+            padding: 18px 40px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); 
+            transform: translateZ(40px); transition: 0.3s;
         }
 
-        .discord-info:hover { 
-            background: rgba(88, 101, 242, 0.2); 
-            border-color: #5865F2;
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
-            transform: translateZ(70px) scale(1.05);
-        }
-
-        .discord-icon {
-            font-size: 2rem;
-            color: #5865F2;
-        }
+        .discord-icon { font-size: 2rem; color: #5865F2; }
     </style>
 </head>
-<body>
+<body onclick="playMusic()">
+    <div id="cursor"></div>
     <ul class="squares"><li></li><li></li><li></li><li></li><li></li></ul>
 
     <div class="glass" id="card">
         <h1>RVN</h1>
-        <div class="discord-info" onclick="copyToClipboard()">
+        <div class="discord-info">
             <i class="fa-brands fa-discord discord-icon"></i>
             <span>und_covking</span>
         </div>
     </div>
 
+    <audio id="chill-track" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         const card = document.getElementById('card');
-        const container = document.body;
+        const cursor = document.getElementById('cursor');
+        const track = document.getElementById('chill-track');
 
-        container.addEventListener('mousemove', (e) => {
+        // Custom Cursor & 3D Tilt
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
             const xAxis = (window.innerWidth / 2 - e.pageX) / 20; 
             const yAxis = (window.innerHeight / 2 - e.pageY) / 20;
             card.style.setProperty('--tilt-x', `${yAxis}deg`);
             card.style.setProperty('--tilt-y', `${-xAxis}deg`);
         });
 
-        container.addEventListener('mouseleave', () => {
-            card.style.setProperty('--tilt-x', `0deg`);
-            card.style.setProperty('--tilt-y', `0deg`);
-        });
-
-        function copyToClipboard() {
-            navigator.clipboard.writeText("und_covking");
-            alert("Discord username copied!");
+        // Music Trigger
+        function playMusic() {
+            track.volume = 0.4; // Keep it chill/low
+            track.play();
         }
     </script>
 </body>
