@@ -10,7 +10,7 @@
 
         body { 
             margin: 0; 
-            background: #050505; 
+            background: #020202; 
             color: white; 
             font-family: 'Inter', 'Segoe UI', sans-serif; 
             height: 100vh; 
@@ -18,79 +18,85 @@
             align-items: center; 
             justify-content: center; 
             overflow: hidden;
-            perspective: 1000px; /* Essential for 3D effect */
+            perspective: 2500px; 
         }
 
-        /* Animated Background Squares */
+        /* Background Squares */
         .squares { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
         .squares li { 
-            position: absolute; display: block; list-style: none; width: 20px; height: 20px; 
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); 
-            animation: animate 20s linear infinite; bottom: -150px; transition: 0.3s;
+            position: absolute; display: block; list-style: none; 
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
+            animation: animate 22s linear infinite; bottom: -250px;
         }
-        /* Make squares react slightly to hover */
-        .squares li:hover { background: rgba(88, 101, 242, 0.3); border-color: #5865F2; transform: scale(1.2); }
-
-        .squares li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
-        .squares li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-        .squares li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-        .squares li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .squares li:nth-child(1) { left: 15%; width: 150px; height: 150px; animation-delay: 0s; }
+        .squares li:nth-child(2) { left: 80%; width: 60px; height: 60px; animation-delay: 3s; }
+        .squares li:nth-child(3) { left: 45%; width: 110px; height: 110px; animation-delay: 1s; }
 
         @keyframes animate { 
             0% { transform: translateY(0) rotate(0deg); opacity: 1; } 
-            100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; } 
+            100% { transform: translateY(-1400px) rotate(720deg); opacity: 0; } 
         }
 
-        /* 3D TILT CARD */
+        /* ULTRA BIG TILT CARD */
         .glass-container {
             transition: transform 0.1s ease-out;
             transform-style: preserve-3d;
         }
 
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(25px); 
-            padding: 60px; 
-            border-radius: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(40px); 
+            padding: 140px 180px; /* Extreme Padding */
+            border-radius: 50px; 
+            border: 1px solid rgba(255, 255, 255, 0.07); 
             text-align: center; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 60px 120px rgba(0,0,0,0.9);
             transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
             transform-style: preserve-3d;
+            min-width: 800px; /* Huge minimum width */
         }
 
         h1 { 
-            font-size: 5rem; 
-            letter-spacing: 15px; 
-            margin-bottom: 20px; 
+            font-size: 12rem; /* Titan font size */
+            letter-spacing: 40px; 
+            margin-bottom: 40px; 
             font-weight: 900; 
-            transform: translateZ(50px); /* Makes text pop out in 3D */
-            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transform: translateZ(150px); /* Massive depth */
+            text-shadow: 0 30px 60px rgba(0,0,0,1);
+            margin-left: 40px; 
         }
 
         .discord-info { 
-            display: flex; align-items: center; justify-content: center; gap: 15px; 
-            font-size: 1.1rem; font-weight: 600; background: rgba(255, 255, 255, 0.05); 
-            padding: 12px 25px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: 0.3s; cursor: pointer; margin-top: 20px;
-            transform: translateZ(30px); /* Pops the button out too */
+            display: flex; align-items: center; justify-content: center; gap: 30px; 
+            font-size: 2.5rem; /* Bigger button text */
+            font-weight: 800; background: rgba(255, 255, 255, 0.04); 
+            padding: 30px 70px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.08); 
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; margin-top: 60px;
+            transform: translateZ(80px); 
         }
 
         .discord-info:hover { 
-            background: rgba(88, 101, 242, 0.2); 
+            background: rgba(88, 101, 242, 0.25); 
             border-color: #5865F2;
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4);
+            box-shadow: 0 0 60px rgba(88, 101, 242, 0.6);
+            transform: translateZ(120px) scale(1.05);
+        }
+
+        .discord-icon {
+            font-size: 3.5rem;
+            color: #5865F2;
         }
     </style>
 </head>
 <body>
     <ul class="squares"><li></li><li></li><li></li><li></li><li></li></ul>
 
-    <div class="glass-container" id="card-container">
+    <div class="glass-container">
         <div class="glass" id="card">
             <h1>RVN</h1>
             <div class="discord-info" onclick="copyToClipboard()">
-                <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.5rem;"></i>
+                <i class="fa-brands fa-discord discord-icon"></i>
                 <span>und_covking</span>
             </div>
         </div>
@@ -101,13 +107,12 @@
         const container = document.body;
 
         container.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 12; 
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 12;
             card.style.setProperty('--tilt-x', `${yAxis}deg`);
             card.style.setProperty('--tilt-y', `${-xAxis}deg`);
         });
 
-        // Reset position when mouse leaves
         container.addEventListener('mouseleave', () => {
             card.style.setProperty('--tilt-x', `0deg`);
             card.style.setProperty('--tilt-y', `0deg`);
@@ -115,7 +120,7 @@
 
         function copyToClipboard() {
             navigator.clipboard.writeText("und_covking");
-            alert("Discord copied!");
+            alert("Discord username copied!");
         }
     </script>
 </body>
