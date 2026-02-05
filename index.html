@@ -10,7 +10,7 @@
 
         body { 
             margin: 0; 
-            background: #020202; 
+            background: #050505; 
             color: white; 
             font-family: 'Inter', 'Segoe UI', sans-serif; 
             height: 100vh; 
@@ -18,73 +18,67 @@
             align-items: center; 
             justify-content: center; 
             overflow: hidden;
-            perspective: 2500px; 
+            perspective: 1500px; 
         }
 
         /* Background Squares */
         .squares { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
         .squares li { 
             position: absolute; display: block; list-style: none; 
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
-            animation: animate 22s linear infinite; bottom: -250px;
+            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); 
+            animation: animate 25s linear infinite; bottom: -150px;
         }
-        .squares li:nth-child(1) { left: 15%; width: 150px; height: 150px; animation-delay: 0s; }
-        .squares li:nth-child(2) { left: 80%; width: 60px; height: 60px; animation-delay: 3s; }
-        .squares li:nth-child(3) { left: 45%; width: 110px; height: 110px; animation-delay: 1s; }
+        .squares li:nth-child(1) { left: 20%; width: 70px; height: 70px; animation-delay: 0s; }
+        .squares li:nth-child(2) { left: 10%; width: 25px; height: 25px; animation-delay: 2s; }
+        .squares li:nth-child(3) { left: 75%; width: 40px; height: 40px; animation-delay: 4s; }
 
         @keyframes animate { 
             0% { transform: translateY(0) rotate(0deg); opacity: 1; } 
-            100% { transform: translateY(-1400px) rotate(720deg); opacity: 0; } 
+            100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; } 
         }
 
-        /* ULTRA BIG TILT CARD */
-        .glass-container {
-            transition: transform 0.1s ease-out;
-            transform-style: preserve-3d;
-        }
-
+        /* BALANCED TILT CARD */
         .glass { 
-            background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(40px); 
-            padding: 140px 180px; /* Extreme Padding */
-            border-radius: 50px; 
-            border: 1px solid rgba(255, 255, 255, 0.07); 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(25px); 
+            padding: 70px 90px; 
+            border-radius: 35px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             text-align: center; 
-            box-shadow: 0 60px 120px rgba(0,0,0,0.9);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
             transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
             transform-style: preserve-3d;
-            min-width: 800px; /* Huge minimum width */
+            min-width: 450px; 
         }
 
         h1 { 
-            font-size: 12rem; /* Titan font size */
-            letter-spacing: 40px; 
-            margin-bottom: 40px; 
+            font-size: 6rem; 
+            letter-spacing: 15px; 
+            margin: 0 0 20px 15px; 
             font-weight: 900; 
-            transform: translateZ(150px); /* Massive depth */
-            text-shadow: 0 30px 60px rgba(0,0,0,1);
-            margin-left: 40px; 
+            transform: translateZ(60px); 
+            text-shadow: 0 15px 30px rgba(0,0,0,0.8);
         }
 
         .discord-info { 
-            display: flex; align-items: center; justify-content: center; gap: 30px; 
-            font-size: 2.5rem; /* Bigger button text */
-            font-weight: 800; background: rgba(255, 255, 255, 0.04); 
-            padding: 30px 70px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.08); 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; margin-top: 60px;
-            transform: translateZ(80px); 
+            display: flex; align-items: center; justify-content: center; gap: 15px; 
+            font-size: 1.4rem; 
+            font-weight: 700; background: rgba(255, 255, 255, 0.05); 
+            padding: 18px 40px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.1); 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer;
+            transform: translateZ(40px); 
         }
 
         .discord-info:hover { 
-            background: rgba(88, 101, 242, 0.25); 
+            background: rgba(88, 101, 242, 0.2); 
             border-color: #5865F2;
-            box-shadow: 0 0 60px rgba(88, 101, 242, 0.6);
-            transform: translateZ(120px) scale(1.05);
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
+            transform: translateZ(70px) scale(1.05);
         }
 
         .discord-icon {
-            font-size: 3.5rem;
+            font-size: 2rem;
             color: #5865F2;
         }
     </style>
@@ -92,13 +86,11 @@
 <body>
     <ul class="squares"><li></li><li></li><li></li><li></li><li></li></ul>
 
-    <div class="glass-container">
-        <div class="glass" id="card">
-            <h1>RVN</h1>
-            <div class="discord-info" onclick="copyToClipboard()">
-                <i class="fa-brands fa-discord discord-icon"></i>
-                <span>und_covking</span>
-            </div>
+    <div class="glass" id="card">
+        <h1>RVN</h1>
+        <div class="discord-info" onclick="copyToClipboard()">
+            <i class="fa-brands fa-discord discord-icon"></i>
+            <span>und_covking</span>
         </div>
     </div>
 
@@ -107,8 +99,8 @@
         const container = document.body;
 
         container.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 12; 
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 12;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 20; 
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 20;
             card.style.setProperty('--tilt-x', `${yAxis}deg`);
             card.style.setProperty('--tilt-y', `${-xAxis}deg`);
         });
