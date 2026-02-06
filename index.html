@@ -3,55 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YourScripts | Official Hub</title>
+    <title>RS | Official Script Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { background-color: #0a0a0b; color: #f4f4f5; font-family: sans-serif; }
-        .glass { background: rgba(18, 18, 20, 0.8); border: 1px solid #27272a; backdrop-filter: blur(12px); }
-        .gradient-border { border: 1px solid transparent; background: linear-gradient(#0a0a0b, #0a0a0b) padding-box, linear-gradient(90deg, #3b82f6, #9333ea) border-box; }
+        /* Modern Dark Theme with Glow Effects (No Images) */
+        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, transparent 50%),
+                        radial-gradient(circle at 0% 100%, #3b0764 0%, transparent 40%);
+            z-index: -1;
+        }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6, #2563eb); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .code-block { background: #000; border: 1px solid #1e293b; color: #4ade80; }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body>
+    <div class="bg-glow"></div>
 
-    <nav class="p-6 flex justify-between items-center glass sticky top-0 z-50">
-        <h1 class="text-2xl font-black italic tracking-tighter text-white">YOUR<span class="text-blue-500">SCRIPTS</span></h1>
-        <div class="flex gap-4">
-            <a href="#" class="hover:text-blue-400 transition"><i data-lucide="github"></i></a>
-            <a href="#" class="hover:text-blue-400 transition"><i data-lucide="message-circle"></i></a>
-        </div>
-    </nav>
-
-    <header class="max-w-4xl mx-auto mt-20 text-center px-4">
-        <h2 class="text-5xl md:text-6xl font-extrabold mb-6">The Ultimate <span class="text-blue-500">Script Hub</span></h2>
-        <p class="text-gray-400 text-lg mb-8 max-w-xl mx-auto">Fast, reliable, and daily updated scripts for all your favorite games.</p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full font-bold transition">View Scripts</button>
-            <button class="glass px-8 py-3 rounded-full font-bold hover:bg-white hover:text-black transition">Join Discord</button>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
-        
-        <div class="glass p-6 rounded-2xl hover:scale-105 transition-transform duration-300">
-            <div class="bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                <i data-lucide="zap" class="text-blue-500"></i>
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
+        <div class="glass w-full max-w-md p-10 rounded-3xl text-center">
+            <h1 class="text-4xl font-black italic mb-2 tracking-tighter">RS<span class="text-blue-500">SYSTEM</span></h1>
+            <p class="text-gray-400 mb-8 text-sm uppercase tracking-widest">Authorized Access Only</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="user" placeholder="Username" class="w-full bg-black/50 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
+                <input type="password" id="pass" placeholder="Password" class="w-full bg-black/50 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
+                <button onclick="checkAuth()" class="btn-primary w-full py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 transition">Login</button>
             </div>
-            <h3 class="text-xl font-bold mb-2">Universal Speed</h3>
-            <p class="text-gray-500 text-sm mb-6">Auto-farm, Fly, and ESP. Works on 99% of executors.</p>
-            <button onclick="copyToClipboard('loadstring(game:HttpGet(\'https://yourlink.com\'))()')" class="w-full py-2 gradient-border rounded-lg text-sm font-semibold hover:opacity-80 transition">Copy Script</button>
+            <p class="mt-6 text-xs text-gray-500">By logging in, you agree to our Terms of Service.</p>
         </div>
+    </div>
 
+    <div id="dashboard" class="hidden animate-in fade-in duration-700">
+        <nav class="p-6 flex justify-between items-center glass border-t-0 border-x-0">
+            <h2 class="text-xl font-bold tracking-tighter">DASHBOARD</h2>
+            <button onclick="location.reload()" class="text-xs font-bold text-gray-400 hover:text-white uppercase">Sign Out</button>
+        </nav>
+
+        <main class="max-w-6xl mx-auto py-12 px-6">
+            <div class="mb-12">
+                <h2 class="text-4xl font-black">Welcome back, <span id="display-user" class="text-blue-500 underline">User</span></h2>
+                <p class="text-gray-400 mt-2">All systems operational. Script status: <span class="text-green-500 font-bold uppercase text-xs">Undetected</span></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass p-8 rounded-3xl group hover:border-blue-500/50 transition duration-500">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="p-3 bg-blue-500/10 rounded-2xl"><i data-lucide="zap" class="text-blue-500"></i></div>
+                        <span class="text-[10px] font-bold bg-green-500/20 text-green-400 px-2 py-1 rounded">V4.2.1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 uppercase italic">Universal Hub</h3>
+                    <p class="text-gray-500 text-sm mb-6">Full feature set for speed, fly, and auto-farm across all supported titles.</p>
+                    
+                    <div class="code-block p-4 rounded-xl text-xs mb-4 overflow-x-auto">
+                        <code>loadstring(game:HttpGet("https://link.com/main"))()</code>
+                    </div>
+                    
+                    <button onclick="copyScript(this)" class="w-full py-3 border border-white/10 rounded-xl text-sm font-bold hover:bg-white hover:text-black transition">Copy Command</button>
+                </div>
+
+                <div class="glass p-8 rounded-3xl group border-dashed border-white/20">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="p-3 bg-purple-500/10 rounded-2xl"><i data-lucide="lock" class="text-purple-500"></i></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 uppercase italic text-purple-400">Premium Aimbot</h3>
+                    <p class="text-gray-500 text-sm mb-6 font-medium italic">Content locked. Complete verification to unlock the key.</p>
+                    
+                    <a href="https://loot-link.com/s?abcd" target="_blank" class="block text-center py-3 bg-white text-black rounded-xl text-sm font-black uppercase transition hover:opacity-90">Unlock Now</a>
+                </div>
+            </div>
         </main>
+    </div>
 
     <script>
-        // Initialize Icons
+        // Init Lucide Icons
         lucide.createIcons();
 
+        // Simple Login Function
+        function checkAuth() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            // Simple demo check (You can change these)
+            if(u === "admin" && p === "admin") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('display-user').innerText = u.toUpperCase();
+            } else {
+                alert("Invalid Credentials. Access Denied.");
+            }
+        }
+
         // Copy Function
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert("Script copied to clipboard!");
+        function copyScript(btn) {
+            const code = "loadstring(game:HttpGet('https://link.com/main'))()";
+            navigator.clipboard.writeText(code);
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            btn.classList.add('bg-green-500', 'text-black', 'border-green-500');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-500', 'text-black', 'border-green-500');
+            }, 2000);
         }
     </script>
 </body>
