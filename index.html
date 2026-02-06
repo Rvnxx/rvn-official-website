@@ -3,49 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS-Dashboard | LootLabs Edition</title>
+    <title>YourScripts | Official Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(20, 20, 20, 0.9); border: 1px solid #222; }
-        .glow-btn { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        body { background-color: #0a0a0b; color: #f4f4f5; font-family: sans-serif; }
+        .glass { background: rgba(18, 18, 20, 0.8); border: 1px solid #27272a; backdrop-filter: blur(12px); }
+        .gradient-border { border: 1px solid transparent; background: linear-gradient(#0a0a0b, #0a0a0b) padding-box, linear-gradient(90deg, #3b82f6, #9333ea) border-box; }
     </style>
 </head>
-<body class="min-h-screen p-6">
+<body class="min-h-screen pb-20">
 
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-12">
-            <h1 class="text-3xl font-black text-blue-500 tracking-tighter">RS-DASHBOARD</h1>
-            <div class="text-sm text-gray-500">API ACTIVE: ed78...549</div>
-        </header>
+    <nav class="p-6 flex justify-between items-center glass sticky top-0 z-50">
+        <h1 class="text-2xl font-black italic tracking-tighter text-white">YOUR<span class="text-blue-500">SCRIPTS</span></h1>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-blue-400 transition"><i data-lucide="github"></i></a>
+            <a href="#" class="hover:text-blue-400 transition"><i data-lucide="message-circle"></i></a>
+        </div>
+    </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            <div class="glass p-8 rounded-3xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-blue-600 px-4 py-1 text-xs font-bold rounded-bl-xl uppercase">Free</div>
-                <h2 class="text-2xl font-bold mb-2">Universal Speed Hub</h2>
-                <p class="text-gray-400 text-sm mb-6">Works on all major executors. Includes fly, speed, and auto-farm.</p>
-                
-                <a href="https://loot-link.com/s?abcd" target="_blank" class="block text-center bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-bold transition glow-btn">
-                    Get Script (Unlock with LootLabs)
-                </a>
+    <header class="max-w-4xl mx-auto mt-20 text-center px-4">
+        <h2 class="text-5xl md:text-6xl font-extrabold mb-6">The Ultimate <span class="text-blue-500">Script Hub</span></h2>
+        <p class="text-gray-400 text-lg mb-8 max-w-xl mx-auto">Fast, reliable, and daily updated scripts for all your favorite games.</p>
+        <div class="flex justify-center gap-4">
+            <button class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full font-bold transition">View Scripts</button>
+            <button class="glass px-8 py-3 rounded-full font-bold hover:bg-white hover:text-black transition">Join Discord</button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+        
+        <div class="glass p-6 rounded-2xl hover:scale-105 transition-transform duration-300">
+            <div class="bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                <i data-lucide="zap" class="text-blue-500"></i>
             </div>
-
-            <div class="glass p-8 rounded-3xl border-purple-500/30">
-                <h2 class="text-2xl font-bold mb-2 text-purple-400">Premium Aimbot</h2>
-                <p class="text-gray-400 text-sm mb-6">Silent aim, ESP, and custom FOV. Best for FPS games.</p>
-                
-                <a href="https://loot-link.com/s?efgh" target="_blank" class="block text-center border border-purple-500 py-3 rounded-xl font-bold hover:bg-purple-500/10 transition">
-                    Unlock Premium Link
-                </a>
-            </div>
-
+            <h3 class="text-xl font-bold mb-2">Universal Speed</h3>
+            <p class="text-gray-500 text-sm mb-6">Auto-farm, Fly, and ESP. Works on 99% of executors.</p>
+            <button onclick="copyToClipboard('loadstring(game:HttpGet(\'https://yourlink.com\'))()')" class="w-full py-2 gradient-border rounded-lg text-sm font-semibold hover:opacity-80 transition">Copy Script</button>
         </div>
 
-        <footer class="mt-20 text-center text-gray-600 text-xs">
-            Powered by LootLabs monetization. Clicking "Get Script" supports the developer.
-        </footer>
-    </div>
+        </main>
 
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Copy Function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert("Script copied to clipboard!");
+        }
+    </script>
 </body>
 </html>
