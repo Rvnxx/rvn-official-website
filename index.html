@@ -1,103 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RonaldoScripts | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <style>
-        :root { --tilt-x: 0deg; --tilt-y: 0deg; }
-
-        body { 
-            margin: 0; background: #050505; color: white; 
-            font-family: 'Inter', sans-serif; height: 100vh; 
-            display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; perspective: 1500px;
-            cursor: none; /* Hides the default cursor */
-        }
-
-        /* Custom Cursor Dot */
-        #cursor {
-            position: fixed; width: 8px; height: 8px; background: white;
-            border-radius: 50%; pointer-events: none; z-index: 999;
-            transition: transform 0.1s ease; transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px white;
-        }
-
-        /* Squares */
-        .squares { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
-        .squares li { 
-            position: absolute; display: block; list-style: none; 
-            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); 
-            animation: animate 25s linear infinite; bottom: -150px;
-        }
-        .squares li:nth-child(1) { left: 20%; width: 70px; height: 70px; }
-        .squares li:nth-child(2) { left: 10%; width: 25px; height: 25px; animation-delay: 2s; }
-        .squares li:nth-child(3) { left: 75%; width: 40px; height: 40px; animation-delay: 4s; }
-
-        @keyframes animate { 
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; } 
-            100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; } 
-        }
-
-        /* Glass Card */
-        .glass { 
-            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); 
-            padding: 70px 90px; border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.05); 
-            text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-            transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-            transform-style: preserve-3d; min-width: 450px; 
-        }
-
-        h1 { 
-            font-size: 6rem; letter-spacing: 15px; margin: 0 0 20px 15px; 
-            font-weight: 900; transform: translateZ(60px); 
-            text-shadow: 0 15px 30px rgba(0,0,0,0.8);
-        }
-
-        .discord-info { 
-            display: flex; align-items: center; justify-content: center; gap: 15px; 
-            font-size: 1.4rem; font-weight: 700; background: rgba(255, 255, 255, 0.03); 
-            padding: 18px 40px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); 
-            transform: translateZ(40px); transition: 0.3s;
-        }
-
-        .discord-icon { font-size: 2rem; color: #5865F2; }
+        body { background-color: #050505; color: white; }
+        .glass { background: rgba(20, 20, 20, 0.8); border: 1px solid #222; backdrop-filter: blur(10px); }
+        .gradient-text { background: linear-gradient(90deg, #3b82f6, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body onclick="playMusic()">
-    <div id="cursor"></div>
-    <ul class="squares"><li></li><li></li><li></li><li></li><li></li></ul>
+<body class="min-h-screen font-sans">
 
-    <div class="glass" id="card">
-        <h1>RVN</h1>
-        <div class="discord-info">
-            <i class="fa-brands fa-discord discord-icon"></i>
-            <span>und_covking</span>
+    <nav class="p-5 flex justify-between items-center glass sticky top-0 z-50">
+        <h1 class="text-2xl font-black tracking-tighter gradient-text">RS-DASHBOARD</h1>
+        <div id="auth-section">
+            <button id="login-btn" onclick="login()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105">Login with Google</button>
+            <div id="user-info" class="hidden flex items-center gap-4">
+                <img id="user-photo" src="" class="w-10 h-10 rounded-full border-2 border-blue-500">
+                <button onclick="logout()" class="text-sm text-gray-400 hover:text-red-500 transition">Logout</button>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <audio id="chill-track" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <main class="max-w-5xl mx-auto p-6">
+        <div id="guest-view" class="text-center py-20">
+            <h2 class="text-5xl font-extrabold mb-4">The #1 Script Hub.</h2>
+            <p class="text-gray-400 text-lg mb-8">Login to access your premium dashboard and script keys.</p>
+            <div class="inline-block glass p-8 rounded-3xl border-blue-500/30">
+                <p class="mb-4 font-bold">New user? Get started today.</p>
+                <button onclick="login()" class="bg-white text-black px-10 py-3 rounded-full font-black hover:bg-gray-200">Get Access Now</button>
+            </div>
+        </div>
+
+        <div id="dashboard-view" class="hidden animate-in fade-in duration-500">
+            <h2 class="text-3xl font-bold mb-8">Welcome, <span id="display-name" class="text-blue-500">User</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-2xl border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold mb-4">My Script Library</h3>
+                    <div class="space-y-4">
+                        <div class="bg-black/50 p-4 rounded-lg">
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Status: Active</p>
+                            <p class="font-medium text-white">Universal Hub V1</p>
+                            <code class="block text-green-400 bg-black mt-2 p-2 rounded text-sm overflow-x-auto">loadstring(game:HttpGet("https://raw.githubusercontent.com/RS/main/hub"))()</code>
+                            <button onclick="copyScript()" class="mt-3 text-xs bg-gray-800 px-3 py-1 rounded hover:bg-gray-700">Copy to Clipboard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold mb-4">Store / Upgrades</h3>
+                    <div class="bg-purple-900/20 border border-purple-500/30 p-5 rounded-xl">
+                        <h4 class="font-bold">Premium Lifetime Access</h4>
+                        <p class="text-sm text-gray-400 mt-1">Unlock all current and future executor scripts.</p>
+                        <div class="mt-5 flex justify-between items-center">
+                            <span class="text-2xl font-bold">$19.99</span>
+                            <button onclick="buyNow()" class="bg-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-purple-500">Unlock All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        const card = document.getElementById('card');
-        const cursor = document.getElementById('cursor');
-        const track = document.getElementById('chill-track');
+        // --- 1. FIREBASE CONFIGURATION ---
+        // Replace these values with yours from the Firebase Console!
+        const firebaseConfig = {
+            apiKey: "PASTE_YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-        // Custom Cursor & 3D Tilt
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 20; 
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 20;
-            card.style.setProperty('--tilt-x', `${yAxis}deg`);
-            card.style.setProperty('--tilt-y', `${-xAxis}deg`);
+        // --- 2. AUTH LOGIC ---
+        function login() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => alert(err.message));
+        }
+
+        function logout() {
+            auth.signOut();
+        }
+
+        // Detect if user is logged in or out
+        auth.onAuthStateChanged(user => {
+            const guestView = document.getElementById('guest-view');
+            const dashboardView = document.getElementById('dashboard-view');
+            const loginBtn = document.getElementById('login-btn');
+            const userInfo = document.getElementById('user-info');
+
+            if (user) {
+                // Logged In
+                guestView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                
+                document.getElementById('display-name').innerText = user.displayName;
+                document.getElementById('user-photo').src = user.photoURL;
+            } else {
+                // Logged Out
+                guestView.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+            }
         });
 
-        // Music Trigger
-        function playMusic() {
-            track.volume = 0.4; // Keep it chill/low
-            track.play();
+        // --- 3. HELPER FUNCTIONS ---
+        function copyScript() {
+            const script = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RS/main/hub"))()';
+            navigator.clipboard.writeText(script);
+            alert("Script copied to clipboard!");
+        }
+
+        function buyNow() {
+            // Replace with your Stripe, PayPal, or Sellix link
+            window.open('https://sellix.io/', '_blank');
         }
     </script>
 </body>
