@@ -4,101 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>und_covking | guns.lol</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #ff0000; --bg: #050505; }
+        :root { --accent: #ff0000; --bg: #030303; --card: rgba(10, 10, 10, 0.85); }
+        
         body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
-        /* The "Vamp" Blur Background */
-        .bg-video { position: fixed; inset: 0; z-index: -1; background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3eHpxbm96ZzRycHdqZ3p6ZzRycHdqZ3p6ZzRycHdqZ3p6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/K791TdTtH9BcyB09O6/giphy.gif') center/cover; opacity: 0.2; filter: grayscale(1) sepia(1) hue-rotate(-50deg) saturate(5) blur(10px); }
 
-        #enter-screen { position: fixed; inset: 0; background: black; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-        #enter-screen h2 { letter-spacing: 15px; color: var(--accent); font-weight: 100; animation: blink 2s infinite; }
-        
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .fade-out { opacity: 0 !important; pointer-events: none !important; transition: 1.5s all; }
+        /* Animated Blurred Background */
+        .vamp-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3eHpxbm96ZzRycHdqZ3p6ZzRycHdqZ3p6ZzRycHdqZ3p6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/K791TdTtH9BcyB09O6/giphy.gif') center/cover;
+            filter: brightness(0.2) blur(20px);
+            transform: scale(1.1);
+        }
 
-        .profile-card { width: 420px; background: rgba(10, 10, 10, 0.95); border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 15px; padding: 30px; backdrop-filter: blur(20px); box-shadow: 0 0 40px rgba(255, 0, 0, 0.1); }
-        .username { font-size: 32px; font-weight: 800; text-shadow: 0 0 15px var(--accent); margin-bottom: 5px; }
+        /* Splash Screen */
+        #splash { position: fixed; inset: 0; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1s ease; }
+        #splash.hide { opacity: 0; pointer-events: none; }
+        #splash h1 { letter-spacing: 12px; font-weight: 900; color: var(--accent); animation: glow 2s infinite ease-in-out; }
+
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 5px var(--accent); opacity: 0.5; } 50% { text-shadow: 0 0 20px var(--accent); opacity: 1; } }
+
+        /* Main Card */
+        .profile-card {
+            width: 440px; background: var(--card); border: 1px solid rgba(255, 0, 0, 0.15); border-radius: 18px;
+            padding: 30px; backdrop-filter: blur(25px); box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            transform-style: preserve-3d;
+        }
+
+        .header-stats { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.4; margin-bottom: 25px; font-weight: 600; }
+
+        .user-section { text-align: center; margin-bottom: 25px; }
+        .username { font-size: 34px; font-weight: 900; letter-spacing: -1px; text-shadow: 0 0 15px rgba(255,0,0,0.5); }
+        .badges { margin-top: 8px; font-size: 18px; display: flex; justify-content: center; gap: 8px; }
+
+        /* Interactive Music Player */
+        .player { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .track-meta { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         
-        /* Progress Bar Fix */
-        .player-container { margin-top: 25px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; }
-        .progress-box { height: 4px; background: #1a1a1a; width: 100%; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        #progress-fill { height: 100%; background: var(--accent); width: 0%; box-shadow: 0 0 10px var(--accent); }
-        .time-info { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.5; font-family: monospace; }
-        
-        .discord-btn { display: flex; align-items: center; gap: 10px; background: #5865F2; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-top: 15px; transition: 0.3s; }
-        .discord-btn:hover { transform: scale(1.02); box-shadow: 0 0 15px #5865F2; }
+        /* Play/Pause Button */
+        #play-pause {
+            width: 45px; height: 45px; background: var(--accent); border: none; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; box-shadow: 0 0 15px var(--accent);
+        }
+        #play-pause:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--accent); }
+        #play-pause svg { fill: black; width: 18px; height: 18px; transition: 0.2s; }
+
+        /* Real Seeker Bar */
+        .seeker-container { position: relative; width: 100%; display: flex; align-items: center; gap: 10px; }
+        input[type="range"] {
+            -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1);
+            height: 4px; border-radius: 2px; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
+            background: white; box-shadow: 0 0 10px var(--accent);
+        }
+
+        .time-display { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.5; margin-top: 6px; font-family: monospace; }
     </style>
 </head>
 <body>
 
-    <div id="enter-screen" onclick="startVamp()">
-        <h2>[ ENTER ]</h2>
-        <p style="font-size: 10px; opacity: 0.4; margin-top: 20px;">TURN VOLUME UP</p>
+    <div id="splash" onclick="initSite()">
+        <h1>[ VAMP ]</h1>
     </div>
 
-    <div class="bg-video"></div>
+    <div class="vamp-bg"></div>
 
-    <div class="profile-card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
-        <div style="font-size: 11px; opacity: 0.4; text-align: right; margin-bottom: 10px;">👁️ 57,049 | 📍 guns.lol HQ</div>
-        
-        <div class="username">und_covking 🚀</div>
-        <div style="opacity: 0.5; font-size: 14px;">@und_covking</div>
+    <div class="profile-card" data-tilt data-tilt-max="6" data-tilt-speed="1000">
+        <div class="header-stats">
+            <span>👁️ 57,049</span>
+            <span>📍 guns.lol HQ</span>
+        </div>
 
-        <a href="https://discord.gg/vamp" class="discord-btn">
-            <img src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png" width="20" style="filter: brightness(0) invert(1);">
-            JOIN THE SERVER
-        </a>
+        <div class="user-section">
+            <div class="username">und_covking</div>
+            <div class="badges">🚀 ❄️ 💎 🩸</div>
+            <p style="opacity: 0.4; font-size: 13px; margin-top: 10px;">@und_covking</p>
+        </div>
 
-        <div class="player-container">
-            <div style="font-size: 12px; font-weight: bold; color: var(--accent);">NOW PLAYING</div>
-            <div style="font-size: 14px; margin: 4px 0;">Sky - Playboi Carti</div>
-            <div class="progress-box"><div id="progress-fill"></div></div>
-            <div class="time-info">
-                <span id="curr">0:00</span>
-                <span id="dur">3:13</span>
+        <div class="player">
+            <div class="track-meta">
+                <button id="play-pause" onclick="togglePlay()">
+                    <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <div>
+                    <div style="font-size: 14px; font-weight: 800;">Sky</div>
+                    <div style="font-size: 12px; opacity: 0.6;">Playboi Carti</div>
+                </div>
+            </div>
+
+            <div class="seeker-container">
+                <input type="range" id="seeker" value="0" step="0.1">
+            </div>
+            <div class="time-display">
+                <span id="current-time">0:00</span>
+                <span id="total-time">3:13</span>
             </div>
         </div>
     </div>
 
-    <audio id="vamp-audio" loop>
+    <audio id="vamp-track" loop>
         <source src="sky.mp3" type="audio/mpeg">
     </audio>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script>
-        const audio = document.getElementById('vamp-audio');
-        const progress = document.getElementById('progress-fill');
+        const audio = document.getElementById('vamp-track');
+        const seeker = document.getElementById('seeker');
+        const playBtn = document.getElementById('play-icon');
+        const pauseBtn = document.getElementById('pause-icon');
 
-        function startVamp() {
-            document.getElementById('enter-screen').classList.add('fade-out');
-            
-            // Force play with a promise check
-            var playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Music started!");
-                }).catch(error => {
-                    console.log("Playback failed. Make sure sky.mp3 is in the folder!");
-                });
+        function initSite() {
+            document.getElementById('splash').classList.add('hide');
+            audio.play();
+            updateIcons();
+        }
+
+        function togglePlay() {
+            if (audio.paused) audio.play();
+            else audio.pause();
+            updateIcons();
+        }
+
+        function updateIcons() {
+            if (audio.paused) {
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+            } else {
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'block';
             }
         }
 
-        // Perfect Progress Bar Sync
-        audio.ontimeupdate = function() {
-            if (audio.duration) {
-                const pos = (audio.currentTime / audio.duration) * 100;
-                progress.style.width = pos + "%";
+        // Sync slider with music
+        audio.ontimeupdate = () => {
+            if (!isNaN(audio.duration)) {
+                const val = (audio.currentTime / audio.duration) * 100;
+                seeker.value = val;
                 
-                let m = Math.floor(audio.currentTime / 60);
-                let s = Math.floor(audio.currentTime % 60);
-                document.getElementById('curr').innerText = m + ":" + (s < 10 ? '0' : '') + s;
-                
-                let dm = Math.floor(audio.duration / 60);
-                let ds = Math.floor(audio.duration % 60);
-                document.getElementById('dur').innerText = dm + ":" + (ds < 10 ? '0' : '') + ds;
+                // Update time text
+                let mins = Math.floor(audio.currentTime / 60);
+                let secs = Math.floor(audio.currentTime % 60);
+                document.getElementById('current-time').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
+        };
+
+        // Seek music when slider is moved
+        seeker.oninput = () => {
+            const time = (seeker.value / 100) * audio.duration;
+            audio.currentTime = time;
+        };
+
+        // Auto-set duration once loaded
+        audio.onloadedmetadata = () => {
+            let mins = Math.floor(audio.duration / 60);
+            let secs = Math.floor(audio.duration % 60);
+            document.getElementById('total-time').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         };
     </script>
 </body>
