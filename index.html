@@ -18,29 +18,24 @@
             transform: scale(1.1);
         }
 
-        /* Splash Screen */
         #splash { position: fixed; inset: 0; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1s ease-in-out; }
         #splash.hide { opacity: 0; pointer-events: none; }
         #splash h1 { letter-spacing: 12px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
-        /* Profile Card */
         .profile-card {
             width: 420px; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 20px;
             padding: 30px; backdrop-filter: blur(25px); box-shadow: 0 30px 80px rgba(0,0,0,0.9);
             transform-style: preserve-3d;
         }
 
-        /* Visit Counter - Now starts at 0 */
         .visit-counter { position: absolute; top: 25px; left: 25px; font-size: 10px; font-weight: 900; color: var(--accent); opacity: 0.7; letter-spacing: 2.5px; }
-
         .header-loc { text-align: right; font-size: 10px; opacity: 0.3; margin-bottom: 15px; font-weight: 600; }
-
         .username { font-size: 36px; font-weight: 900; letter-spacing: -1.5px; text-align: center; margin: 10px 0; }
         .subtext { text-align: center; font-size: 13px; opacity: 0.4; margin-bottom: 25px; }
 
-        /* Interactive Seeker Player */
-        .player { background: rgba(255,255,255,0.02); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .player-row { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; }
+        /* Player Styling */
+        .player { background: rgba(255,255,255,0.02); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .player-row { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
         
         #play-pause {
             width: 44px; height: 44px; background: var(--accent); border: none; border-radius: 50%;
@@ -50,15 +45,41 @@
         #play-pause:hover { transform: scale(1.08); box-shadow: 0 0 25px var(--accent); }
         #play-pause svg { fill: black; width: 18px; height: 18px; }
 
-        .bar-container { position: relative; width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; }
-        #seek-bar { 
-            position: absolute; width: 100%; height: 100%; -webkit-appearance: none; 
-            background: transparent; z-index: 10; cursor: pointer; margin: 0;
+        /* Lyrics Styling */
+        .lyrics-container {
+            height: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+            overflow: hidden;
         }
-        #seek-fill { position: absolute; height: 100%; background: var(--accent); border-radius: 10px; width: 0%; box-shadow: 0 0 10px var(--accent); }
-        
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: white; border: 2px solid var(--accent); }
+        #lyrics-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.2);
+        }
+        .lyric-fade { opacity: 0 !important; transform: translateY(5px); }
 
+        /* Volume Slider */
+        .volume-container { margin-left: auto; position: relative; display: flex; align-items: center; height: 44px; }
+        .volume-slider-wrapper {
+            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%) scaleY(0);
+            transform-origin: bottom; background: rgba(10, 10, 10, 0.95); padding: 12px 8px;
+            border-radius: 20px; border: 1px solid var(--accent); transition: 0.3s ease; opacity: 0; height: 100px;
+        }
+        .volume-container:hover .volume-slider-wrapper { transform: translateX(-50%) scaleY(1); opacity: 1; }
+        #volume-range { -webkit-appearance: none; width: 80px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 5px; outline: none; transform: rotate(-90deg); margin-top: 45px; cursor: pointer; }
+        #volume-range::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+        .volume-icon { opacity: 0.5; cursor: pointer; }
+
+        /* Seeker */
+        .bar-container { position: relative; width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+        #seek-bar { position: absolute; width: 100%; height: 100%; -webkit-appearance: none; background: transparent; z-index: 10; cursor: pointer; margin: 0; }
+        #seek-fill { position: absolute; height: 100%; background: var(--accent); border-radius: 10px; width: 0%; box-shadow: 0 0 10px var(--accent); }
         .time-labels { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.4; margin-top: 8px; font-family: monospace; }
     </style>
 </head>
@@ -88,6 +109,17 @@
                     <div style="font-size: 14px; font-weight: 900;">Sky</div>
                     <div style="font-size: 11px; opacity: 0.5;">Playboi Carti</div>
                 </div>
+
+                <div class="volume-container">
+                    <div class="volume-slider-wrapper">
+                        <input type="range" id="volume-range" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                    <svg class="volume-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                </div>
+            </div>
+
+            <div class="lyrics-container">
+                <div id="lyrics-text">...</div>
             </div>
 
             <div class="bar-container">
@@ -112,12 +144,20 @@
         const fill = document.getElementById('seek-fill');
         const pIcon = document.getElementById('s-play');
         const sIcon = document.getElementById('s-pause');
+        const volumeRange = document.getElementById('volume-range');
+        const lyricEl = document.getElementById('lyrics-text');
 
-        // Visit Counter: Starts at 0
-        let currentVisits = localStorage.getItem('site_v2_visits') || 0;
-        currentVisits = parseInt(currentVisits) + 1;
-        localStorage.setItem('site_v2_visits', currentVisits);
-        document.getElementById('count').innerText = currentVisits;
+        // LYRICS DATA: [seconds]: "Lyric Text"
+        const lyrics = {
+            0: "I'm on the track...",
+            5: "I'm mixed with the milk...",
+            10: "I'm in the sky, I'm in the sky",
+            15: "I'm on the X, I'm on the Codeine",
+            20: "I got a bitch, she a vamp",
+            25: "Wake up, it's the first of the month"
+        };
+
+        audio.volume = 0.5;
 
         function startVamp() {
             document.getElementById('splash').classList.add('hide');
@@ -132,37 +172,48 @@
         }
 
         function updateIcons() {
-            if (audio.paused) {
-                pIcon.style.display = 'block';
-                sIcon.style.display = 'none';
-            } else {
-                pIcon.style.display = 'none';
-                sIcon.style.display = 'block';
-            }
+            pIcon.style.display = audio.paused ? 'block' : 'none';
+            sIcon.style.display = audio.paused ? 'none' : 'block';
         }
 
-        // Seeker Control
+        volumeRange.oninput = (e) => { audio.volume = e.target.value; };
+
         audio.ontimeupdate = () => {
             if (audio.duration) {
                 const pct = (audio.currentTime / audio.duration) * 100;
                 seeker.value = pct;
                 fill.style.width = pct + "%";
                 
+                // Update Time Labels
                 let m = Math.floor(audio.currentTime / 60);
                 let s = Math.floor(audio.currentTime % 60);
                 document.getElementById('current').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+                // Lyrics Logic
+                let currentSec = Math.floor(audio.currentTime);
+                if (lyrics[currentSec] && lyricEl.innerText !== lyrics[currentSec]) {
+                    lyricEl.classList.add('lyric-fade');
+                    setTimeout(() => {
+                        lyricEl.innerText = lyrics[currentSec];
+                        lyricEl.classList.remove('lyric-fade');
+                    }, 300);
+                }
             }
         };
 
-        seeker.oninput = () => {
-            audio.currentTime = (seeker.value / 100) * audio.duration;
-        };
+        seeker.oninput = () => { audio.currentTime = (seeker.value / 100) * audio.duration; };
 
         audio.onloadedmetadata = () => {
             let m = Math.floor(audio.duration / 60);
             let s = Math.floor(audio.duration % 60);
             document.getElementById('duration').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         };
+
+        // Visit Counter
+        let currentVisits = localStorage.getItem('site_v2_visits') || 0;
+        currentVisits = parseInt(currentVisits) + 1;
+        localStorage.setItem('site_v2_visits', currentVisits);
+        document.getElementById('count').innerText = currentVisits;
     </script>
 </body>
 </html>
