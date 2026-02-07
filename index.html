@@ -6,142 +6,142 @@
     <title>und_covking | guns.lol</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #ff0000; --bg: #020202; --card-bg: rgba(8, 8, 8, 0.9); }
+        :root { --accent: #ff0000; --bg: #010101; --card-bg: rgba(10, 10, 10, 0.9); }
         
         body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: crosshair; }
 
-        /* Animated Background */
+        /* Moving Background */
         .vamp-bg {
             position: fixed; inset: 0; z-index: -1;
             background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3eHpxbm96ZzRycHdqZ3p6ZzRycHdqZ3p6ZzRycHdqZ3p6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/K791TdTtH9BcyB09O6/giphy.gif') center/cover;
-            filter: brightness(0.1) blur(50px);
-            transform: scale(1.2);
+            filter: brightness(0.12) blur(45px);
+            transform: scale(1.1);
         }
 
         /* Splash Screen */
-        #splash { position: fixed; inset: 0; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1.2s ease; }
+        #splash { position: fixed; inset: 0; background: black; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1s ease-in-out; }
         #splash.hide { opacity: 0; pointer-events: none; }
-        #splash h1 { letter-spacing: 12px; font-weight: 900; color: var(--accent); }
+        #splash h1 { letter-spacing: 12px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
         /* Profile Card */
         .profile-card {
-            width: 440px; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.03); border-radius: 24px;
-            padding: 35px; backdrop-filter: blur(30px); box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+            width: 420px; background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 20px;
+            padding: 30px; backdrop-filter: blur(25px); box-shadow: 0 30px 80px rgba(0,0,0,0.9);
             transform-style: preserve-3d;
         }
 
-        /* Visit Counter Styling */
-        .visit-counter { position: absolute; top: 30px; left: 30px; font-size: 11px; font-weight: 900; color: var(--accent); opacity: 0.5; letter-spacing: 3px; }
+        /* Visit Counter - Now starts at 0 */
+        .visit-counter { position: absolute; top: 25px; left: 25px; font-size: 10px; font-weight: 900; color: var(--accent); opacity: 0.7; letter-spacing: 2.5px; }
 
-        .header-info { display: flex; justify-content: flex-end; font-size: 11px; opacity: 0.3; margin-bottom: 20px; font-weight: 600; }
+        .header-loc { text-align: right; font-size: 10px; opacity: 0.3; margin-bottom: 15px; font-weight: 600; }
 
-        .username { font-size: 38px; font-weight: 900; letter-spacing: -1.5px; text-align: center; text-shadow: 0 0 25px rgba(255,0,0,0.4); margin: 10px 0; }
-        .subtext { text-align: center; font-size: 14px; opacity: 0.4; margin-bottom: 30px; letter-spacing: 1px; }
+        .username { font-size: 36px; font-weight: 900; letter-spacing: -1.5px; text-align: center; margin: 10px 0; }
+        .subtext { text-align: center; font-size: 13px; opacity: 0.4; margin-bottom: 25px; }
 
         /* Interactive Seeker Player */
-        .player { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 22px; border: 1px solid rgba(255,255,255,0.05); }
-        .player-top { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+        .player { background: rgba(255,255,255,0.02); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .player-row { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; }
         
         #play-pause {
-            width: 48px; height: 48px; background: var(--accent); border: none; border-radius: 50%;
+            width: 44px; height: 44px; background: var(--accent); border: none; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 20px rgba(255,0,0,0.3);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px rgba(255,0,0,0.4);
         }
-        #play-pause:hover { transform: scale(1.1); box-shadow: 0 0 30px var(--accent); }
-        #play-pause svg { fill: black; width: 20px; height: 20px; }
+        #play-pause:hover { transform: scale(1.08); box-shadow: 0 0 25px var(--accent); }
+        #play-pause svg { fill: black; width: 18px; height: 18px; }
 
-        .seeker-wrap { position: relative; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .bar-container { position: relative; width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; }
         #seek-bar { 
             position: absolute; width: 100%; height: 100%; -webkit-appearance: none; 
             background: transparent; z-index: 10; cursor: pointer; margin: 0;
         }
-        #seek-fill { position: absolute; height: 100%; background: var(--accent); border-radius: 10px; width: 0%; box-shadow: 0 0 15px var(--accent); }
+        #seek-fill { position: absolute; height: 100%; background: var(--accent); border-radius: 10px; width: 0%; box-shadow: 0 0 10px var(--accent); }
         
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: white; border: 2px solid var(--accent); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: white; border: 2px solid var(--accent); }
 
-        .time-row { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.4; margin-top: 10px; font-family: monospace; }
+        .time-labels { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.4; margin-top: 8px; font-family: monospace; }
     </style>
 </head>
 <body>
 
     <div class="visit-counter">VIEWS: <span id="count">0</span></div>
 
-    <div id="splash" onclick="startApp()">
+    <div id="splash" onclick="startVamp()">
         <h1>[ ENTER ]</h1>
     </div>
 
     <div class="vamp-bg"></div>
 
-    <div class="profile-card" data-tilt data-tilt-max="6" data-tilt-speed="1000">
-        <div class="header-info">📍 guns.lol HQ</div>
+    <div class="profile-card" data-tilt data-tilt-max="5" data-tilt-speed="1000">
+        <div class="header-loc">Lua Developer</div>
 
-        <div class="username">und_covking</div>
-        <div class="subtext">@und_covking • discord.gg/vamp</div>
+        <div class="username">Rvn</div>
+        <div class="subtext">@und_covking • discord.gg/K7CcPwREUX</div>
 
         <div class="player">
-            <div class="player-top">
-                <button id="play-pause" onclick="toggleAudio()">
-                    <svg id="p-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    <svg id="p-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <div class="player-row">
+                <button id="play-pause" onclick="toggle()">
+                    <svg id="s-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="s-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
                 <div>
-                    <div style="font-size: 15px; font-weight: 900;">Sky</div>
-                    <div style="font-size: 12px; opacity: 0.5;">Playboi Carti</div>
+                    <div style="font-size: 14px; font-weight: 900;">Sky</div>
+                    <div style="font-size: 11px; opacity: 0.5;">Playboi Carti</div>
                 </div>
             </div>
 
-            <div class="seeker-wrap">
+            <div class="bar-container">
                 <div id="seek-fill"></div>
                 <input type="range" id="seek-bar" value="0" min="0" max="100" step="0.1">
             </div>
-            <div class="time-row">
-                <span id="curr-time">0:00</span>
-                <span id="total-time">3:13</span>
+            <div class="time-labels">
+                <span id="current">0:00</span>
+                <span id="duration">3:13</span>
             </div>
         </div>
     </div>
 
-    <audio id="vamp-track" loop>
+    <audio id="vamp-audio" loop>
         <source src="sky.mp3" type="audio/mpeg">
     </audio>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script>
-        const audio = document.getElementById('vamp-track');
+        const audio = document.getElementById('vamp-audio');
         const seeker = document.getElementById('seek-bar');
         const fill = document.getElementById('seek-fill');
-        const playIcon = document.getElementById('p-play');
-        const pauseIcon = document.getElementById('p-pause');
+        const pIcon = document.getElementById('s-play');
+        const sIcon = document.getElementById('s-pause');
 
-        // Visit Counter Logic
-        let currentVisits = localStorage.getItem('site_visits') || 57049;
+        // Visit Counter: Starts at 0
+        let currentVisits = localStorage.getItem('site_v2_visits') || 0;
         currentVisits = parseInt(currentVisits) + 1;
-        localStorage.setItem('site_visits', currentVisits);
-        document.getElementById('count').innerText = currentVisits.toLocaleString();
+        localStorage.setItem('site_v2_visits', currentVisits);
+        document.getElementById('count').innerText = currentVisits;
 
-        function startApp() {
+        function startVamp() {
             document.getElementById('splash').classList.add('hide');
             audio.play();
-            updateUI();
+            updateIcons();
         }
 
-        function toggleAudio() {
+        function toggle() {
             if (audio.paused) audio.play();
             else audio.pause();
-            updateUI();
+            updateIcons();
         }
 
-        function updateUI() {
+        function updateIcons() {
             if (audio.paused) {
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
+                pIcon.style.display = 'block';
+                sIcon.style.display = 'none';
             } else {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
+                pIcon.style.display = 'none';
+                sIcon.style.display = 'block';
             }
         }
 
-        // Seeker Syncing
+        // Seeker Control
         audio.ontimeupdate = () => {
             if (audio.duration) {
                 const pct = (audio.currentTime / audio.duration) * 100;
@@ -150,7 +150,7 @@
                 
                 let m = Math.floor(audio.currentTime / 60);
                 let s = Math.floor(audio.currentTime % 60);
-                document.getElementById('curr-time').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                document.getElementById('current').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
             }
         };
 
@@ -161,7 +161,7 @@
         audio.onloadedmetadata = () => {
             let m = Math.floor(audio.duration / 60);
             let s = Math.floor(audio.duration % 60);
-            document.getElementById('total-time').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            document.getElementById('duration').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         };
     </script>
 </body>
