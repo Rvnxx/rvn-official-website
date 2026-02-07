@@ -3,112 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS | Official Script Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>VAMP | @YourName</title>
     <style>
-        /* Modern Dark Theme with Glow Effects (No Images) */
-        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, transparent 50%),
-                        radial-gradient(circle at 0% 100%, #3b0764 0%, transparent 40%);
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;900&display=swap');
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        /* Glitchy Title Effect */
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 3.5rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate;
+            letter-spacing: 10px;
+        }
+
+        @keyframes pulse {
+            from { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+            to { text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #8b0000; }
+        }
+
+        .container {
+            z-index: 1;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 50px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 2px;
+        }
+
+        /* Animated Buttons */
+        .links a {
+            display: block;
+            width: 250px;
+            color: #fff;
+            text-decoration: none;
+            padding: 15px;
+            margin: 15px auto;
+            border: 2px solid #ff0000;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        /* The "Slide" Animation on Hover */
+        .links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #ff0000;
+            transition: 0.4s;
             z-index: -1;
         }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .btn-primary { background: linear-gradient(90deg, #3b82f6, #2563eb); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
-        .code-block { background: #000; border: 1px solid #1e293b; color: #4ade80; }
+
+        .links a:hover::before {
+            left: 0;
+        }
+
+        .links a:hover {
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ff0000;
+        }
+
+        /* Special Discord Button Glow */
+        .discord-btn {
+            border-color: #5865F2 !important; /* Discord Blue */
+            animation: glow-discord 2s infinite;
+        }
+
+        @keyframes glow-discord {
+            0% { box-shadow: 0 0 5px #5865F2; }
+            50% { box-shadow: 0 0 20px #5865F2; }
+            100% { box-shadow: 0 0 5px #5865F2; }
+        }
+
+        #bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            transform: translateX(-50%) translateY(-50%);
+            opacity: 0.4;
+            filter: grayscale(1) sepia(1) hue-rotate(-50deg) saturate(5); /* Makes video look Red/Black */
+        }
     </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-6">
-        <div class="glass w-full max-w-md p-10 rounded-3xl text-center">
-            <h1 class="text-4xl font-black italic mb-2 tracking-tighter">RS<span class="text-blue-500">SYSTEM</span></h1>
-            <p class="text-gray-400 mb-8 text-sm uppercase tracking-widest">Authorized Access Only</p>
-            
-            <div class="space-y-4">
-                <input type="text" id="user" placeholder="Username" class="w-full bg-black/50 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
-                <input type="password" id="pass" placeholder="Password" class="w-full bg-black/50 border border-white/10 p-4 rounded-xl outline-none focus:border-blue-500 transition">
-                <button onclick="checkAuth()" class="btn-primary w-full py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 transition">Login</button>
-            </div>
-            <p class="mt-6 text-xs text-gray-500">By logging in, you agree to our Terms of Service.</p>
+    <iframe id="bg-video" 
+        src="https://www.youtube.com/embed/GYE9H4SMq5E?autoplay=1&mute=1&loop=1&playlist=GYE9H4SMq5E&controls=0&showinfo=0" 
+        frameborder="0">
+    </iframe>
+
+    <div class="container">
+        <h1>SKY</h1>
+        <div class="links">
+            <a href="https://discord.gg/YOUR_INVITE_CODE" class="discord-btn" target="_blank">JOIN THE DISCORD</a>
+            <a href="#" target="_blank">INSTAGRAM</a>
+            <a href="#" target="_blank">SOUNDCLOUD</a>
+            <a href="#" target="_blank">TWITTER</a>
         </div>
     </div>
 
-    <div id="dashboard" class="hidden animate-in fade-in duration-700">
-        <nav class="p-6 flex justify-between items-center glass border-t-0 border-x-0">
-            <h2 class="text-xl font-bold tracking-tighter">DASHBOARD</h2>
-            <button onclick="location.reload()" class="text-xs font-bold text-gray-400 hover:text-white uppercase">Sign Out</button>
-        </nav>
-
-        <main class="max-w-6xl mx-auto py-12 px-6">
-            <div class="mb-12">
-                <h2 class="text-4xl font-black">Welcome back, <span id="display-user" class="text-blue-500 underline">User</span></h2>
-                <p class="text-gray-400 mt-2">All systems operational. Script status: <span class="text-green-500 font-bold uppercase text-xs">Undetected</span></p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="glass p-8 rounded-3xl group hover:border-blue-500/50 transition duration-500">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="p-3 bg-blue-500/10 rounded-2xl"><i data-lucide="zap" class="text-blue-500"></i></div>
-                        <span class="text-[10px] font-bold bg-green-500/20 text-green-400 px-2 py-1 rounded">V4.2.1</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 uppercase italic">Universal Hub</h3>
-                    <p class="text-gray-500 text-sm mb-6">Full feature set for speed, fly, and auto-farm across all supported titles.</p>
-                    
-                    <div class="code-block p-4 rounded-xl text-xs mb-4 overflow-x-auto">
-                        <code>loadstring(game:HttpGet("https://link.com/main"))()</code>
-                    </div>
-                    
-                    <button onclick="copyScript(this)" class="w-full py-3 border border-white/10 rounded-xl text-sm font-bold hover:bg-white hover:text-black transition">Copy Command</button>
-                </div>
-
-                <div class="glass p-8 rounded-3xl group border-dashed border-white/20">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="p-3 bg-purple-500/10 rounded-2xl"><i data-lucide="lock" class="text-purple-500"></i></div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 uppercase italic text-purple-400">Premium Aimbot</h3>
-                    <p class="text-gray-500 text-sm mb-6 font-medium italic">Content locked. Complete verification to unlock the key.</p>
-                    
-                    <a href="https://loot-link.com/s?abcd" target="_blank" class="block text-center py-3 bg-white text-black rounded-xl text-sm font-black uppercase transition hover:opacity-90">Unlock Now</a>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        // Init Lucide Icons
-        lucide.createIcons();
-
-        // Simple Login Function
-        function checkAuth() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-
-            // Simple demo check (You can change these)
-            if(u === "admin" && p === "admin") {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                document.getElementById('display-user').innerText = u.toUpperCase();
-            } else {
-                alert("Invalid Credentials. Access Denied.");
-            }
-        }
-
-        // Copy Function
-        function copyScript(btn) {
-            const code = "loadstring(game:HttpGet('https://link.com/main'))()";
-            navigator.clipboard.writeText(code);
-            const originalText = btn.innerText;
-            btn.innerText = "COPIED!";
-            btn.classList.add('bg-green-500', 'text-black', 'border-green-500');
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.classList.remove('bg-green-500', 'text-black', 'border-green-500');
-            }, 2000);
-        }
-    </script>
 </body>
 </html>
