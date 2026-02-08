@@ -26,7 +26,7 @@
             align-items: center; 
             justify-content: center; 
             overflow: hidden; 
-            perspective: 1000px; /* Essential for 3D depth */
+            perspective: 1000px;
         }
 
         .vamp-bg {
@@ -36,7 +36,6 @@
             transform: scale(1.1);
         }
 
-        /* 3D Profile Card */
         .profile-card {
             width: 420px; 
             background: var(--card-bg); 
@@ -46,7 +45,6 @@
             backdrop-filter: blur(25px); 
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             text-align: center;
-            /* Animation for floating when NOT hovering */
             animation: card-float 6s infinite ease-in-out;
             transform-style: preserve-3d;
             will-change: transform;
@@ -61,7 +59,7 @@
             justify-content: center;
             gap: 8px;
             margin-bottom: 5px;
-            transform: translateZ(20px); /* Makes status pop out slightly */
+            transform: translateZ(20px);
         }
 
         .status-dot {
@@ -90,9 +88,9 @@
             padding: 20px; 
             border: 1px solid rgba(255,255,255,0.05); 
             text-align: left;
-            transform: translateZ(30px); /* Pulls player forward in 3D space */
+            transform: translateZ(30px);
         }
-        .player-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .player-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; position: relative; }
         
         #play-pause {
             width: 44px; height: 44px; background: var(--accent); border: none; border-radius: 50%;
@@ -102,25 +100,38 @@
         #play-pause:hover { transform: scale(1.1); background: #ff3333; }
         #play-pause svg { fill: black; width: 18px; height: 18px; }
 
+        .volume-container { margin-left: auto; position: relative; display: flex; align-items: center; height: 44px; }
+        .volume-slider-wrapper {
+            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%) scaleY(0);
+            transform-origin: bottom; background: rgba(10, 10, 10, 0.9); padding: 12px 8px;
+            border-radius: 20px; border: 1px solid var(--accent); transition: 0.3s ease; opacity: 0; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .volume-container:hover .volume-slider-wrapper { transform: translateX(-50%) scaleY(1); opacity: 1; }
+        #volume-range { 
+            -webkit-appearance: none; width: 60px; height: 3px; background: rgba(255,255,255,0.1); 
+            border-radius: 5px; outline: none; transform: rotate(-90deg); cursor: pointer; 
+        }
+        #volume-range::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 10px; height: 10px; background: var(--accent); 
+            border-radius: 50%; box-shadow: 0 0 8px var(--accent); 
+        }
+
         .bar-container { position: relative; width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; }
         #seek-fill { position: absolute; height: 100%; background: var(--accent); width: 0%; box-shadow: 0 0 10px var(--accent); }
         #seek-bar { position: absolute; width: 100%; height: 100%; -webkit-appearance: none; background: transparent; cursor: pointer; margin: 0; }
         
         .time-labels { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.4; margin-top: 8px; }
-
-        .visit-counter { position: absolute; top: 30px; left: 30px; font-size: 10px; font-weight: 900; color: var(--accent); opacity: 0.6; z-index: 10; }
     </style>
 </head>
 <body onclick="startAudio()">
 
-    <div class="visit-counter">VIEWS: <span id="count">0</span></div>
     <div class="vamp-bg"></div>
 
     <div class="profile-card" 
          data-tilt 
-         data-tilt-max="15" 
+         data-tilt-max="12" 
          data-tilt-speed="400" 
-         data-tilt-perspective="1000"
          data-tilt-glare="true" 
          data-tilt-max-glare="0.2">
          
@@ -145,6 +156,13 @@
                 <div>
                     <div style="font-size: 14px; font-weight: 900;">Sky</div>
                     <div style="font-size: 11px; opacity: 0.5;">Playboi Carti</div>
+                </div>
+
+                <div class="volume-container">
+                    <div class="volume-slider-wrapper">
+                        <input type="range" id="volume-range" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                    <svg class="volume-icon" width="20" height="20" fill="white" style="opacity: 0.5; cursor: pointer;" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </div>
             </div>
 
@@ -171,16 +189,12 @@
         const fill = document.getElementById('seek-fill');
         const pIcon = document.getElementById('s-play');
         const sIcon = document.getElementById('s-pause');
+        const volRange = document.getElementById('volume-range');
         let hasInteracted = false;
 
-        // Start 3D Tilt
-        VanillaTilt.init(document.querySelector(".profile-card"), {
-            max: 15,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.2,
-        });
+        audio.volume = 0.5;
 
+        // Lanyard Logic
         async function updatePresence() {
             try {
                 const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
@@ -190,21 +204,28 @@
                 const dotEl = document.getElementById('status-dot');
                 const activityEl = document.getElementById('discord-activity');
 
-                statusEl.innerText = data.discord_status.replace('dnd', 'do not disturb');
-                dotEl.className = `status-dot ${data.discord_status}`;
+                // Update Status Text & Class
+                const status = data.discord_status;
+                statusEl.innerText = status === 'dnd' ? 'do not disturb' : status;
+                dotEl.className = `status-dot ${status}`;
 
+                // Update Activity Text
                 if (data.activities && data.activities.length > 0) {
+                    // Filter out "Custom Status" (type 4) to show actual games/apps
                     const act = data.activities.find(a => a.type !== 4) || data.activities[0];
-                    activityEl.innerText = `${act.name}`;
+                    activityEl.innerText = act.name;
                 } else {
                     activityEl.innerText = "No current activity";
                 }
-            } catch (e) { console.error("Presence Error", e); }
+            } catch (e) { 
+                console.error("Lanyard Error:", e); 
+            }
         }
 
-        setInterval(updatePresence, 15000);
+        setInterval(updatePresence, 10000);
         updatePresence();
 
+        // Audio controls
         function startAudio() {
             if (!hasInteracted) {
                 audio.play().catch(() => {});
@@ -225,12 +246,16 @@
             sIcon.style.display = audio.paused ? 'none' : 'block';
         }
 
+        volRange.oninput = (e) => { audio.volume = e.target.value; };
+
         audio.ontimeupdate = () => {
-            const pct = (audio.currentTime / audio.duration) * 100;
-            seeker.value = pct;
-            fill.style.width = pct + "%";
-            let m = Math.floor(audio.currentTime / 60), s = Math.floor(audio.currentTime % 60);
-            document.getElementById('current').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if (audio.duration) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                seeker.value = pct;
+                fill.style.width = pct + "%";
+                let m = Math.floor(audio.currentTime / 60), s = Math.floor(audio.currentTime % 60);
+                document.getElementById('current').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            }
         };
 
         seeker.oninput = () => { audio.currentTime = (seeker.value / 100) * audio.duration; };
@@ -239,10 +264,6 @@
             let m = Math.floor(audio.duration / 60), s = Math.floor(audio.duration % 60);
             document.getElementById('duration').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         };
-
-        let v = localStorage.getItem('site_visits') || 0;
-        localStorage.setItem('site_visits', ++v);
-        document.getElementById('count').innerText = v;
     </script>
 </body>
 </html>
