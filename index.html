@@ -66,7 +66,7 @@
             width: 10px; height: 10px;
             border-radius: 50%;
             background: var(--offline);
-            transition: 0.5s ease;
+            transition: 0.3s ease; /* Faster color transition */
         }
 
         .status-dot.online { background: var(--online); box-shadow: 0 0 12px var(--online); animation: pulse 2s infinite; }
@@ -76,7 +76,7 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         #discord-status { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
-        #discord-activity { font-size: 12px; opacity: 0.5; margin-bottom: 25px; min-height: 15px; transform: translateZ(10px); }
+        #discord-activity { font-size: 12px; opacity: 0.5; margin-bottom: 25px; min-height: 15px; transform: translateZ(10px); color: #fff; }
 
         .username { font-size: 42px; font-weight: 900; letter-spacing: -2px; margin: 0; transform: translateZ(40px); }
         .subtext { font-size: 13px; opacity: 0.4; margin-bottom: 25px; display: block; transform: translateZ(15px); }
@@ -141,9 +141,9 @@
         
         <div class="status-container">
             <div id="status-dot" class="status-dot"></div>
-            <span id="discord-status">LOADING...</span>
+            <span id="discord-status">OFFLINE</span>
         </div>
-        <div id="discord-activity">Fetching presence...</div>
+        <div id="discord-activity">No current activity</div>
 
         <span class="subtext">@und_covking • discord.gg/K7CcPwREUX</span>
 
@@ -194,7 +194,6 @@
 
         audio.volume = 0.5;
 
-        // Lanyard Logic
         async function updatePresence() {
             try {
                 const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
@@ -204,16 +203,22 @@
                 const dotEl = document.getElementById('status-dot');
                 const activityEl = document.getElementById('discord-activity');
 
-                // Update Status Text & Class
-                const status = data.discord_status;
-                statusEl.innerText = status === 'dnd' ? 'do not disturb' : status;
+                // Update status UI
+                const status = data.discord_status || 'offline';
+                statusEl.innerText = status === 'dnd' ? 'DO NOT DISTURB' : status.toUpperCase();
                 dotEl.className = `status-dot ${status}`;
 
-                // Update Activity Text
-                if (data.activities && data.activities.length > 0) {
-                    // Filter out "Custom Status" (type 4) to show actual games/apps
+                // Priority Logic for Activities
+                if (data.listening_to_spotify) {
+                    activityEl.innerText = `Listening to ${data.spotify.song}`;
+                } else if (data.activities && data.activities.length > 0) {
                     const act = data.activities.find(a => a.type !== 4) || data.activities[0];
-                    activityEl.innerText = act.name;
+                    // Check activity type for proper wording
+                    let prefix = "Playing ";
+                    if (act.type === 2) prefix = "Listening to ";
+                    if (act.type === 3) prefix = "Watching ";
+                    
+                    activityEl.innerText = `${prefix}${act.name}`;
                 } else {
                     activityEl.innerText = "No current activity";
                 }
@@ -222,10 +227,10 @@
             }
         }
 
-        setInterval(updatePresence, 10000);
+        // Fast update interval: 3 seconds
+        setInterval(updatePresence, 3000);
         updatePresence();
 
-        // Audio controls
         function startAudio() {
             if (!hasInteracted) {
                 audio.play().catch(() => {});
@@ -259,7 +264,6 @@
         };
 
         seeker.oninput = () => { audio.currentTime = (seeker.value / 100) * audio.duration; };
-        
         audio.onloadedmetadata = () => {
             let m = Math.floor(audio.duration / 60), s = Math.floor(audio.duration % 60);
             document.getElementById('duration').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
